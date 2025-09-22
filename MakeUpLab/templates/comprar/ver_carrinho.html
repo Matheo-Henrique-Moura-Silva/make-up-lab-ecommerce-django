@@ -1,0 +1,177 @@
+{% extends "base.html" %} {% load static %}
+
+{% block title %}Make Up Lab - CARRINHO{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/contas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aux_produto.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="hero-section">
+        <h1 class="display-4 fw-bold">Produtos Adicionados ao Carrinho.</h1>
+        <a href="{% url 'inicio' %}" class="btn btn-primary btn-lg mt-3">
+            Explorar Produtos <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{message.tags}} alert-dismissible fade show mb-5 section-title" style="font-size: 1rem">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 product-grid ">
+        {% for item in itens %}
+        <div class="col section-title">
+            <div class="product-card card h-100">
+                <a href="{% url 'ver_produto' item.produto.id %}"><img src="{{ item.produto.imagem_capa.url }}" class="card-img-top" alt="{{ item.produto.nome }}"></a>
+                <div class="card-body">
+                    <a class="card-title-product2" href="{% url 'ver_produto' item.produto.id %}"><h5 class="card-title-product">{{ item.produto.nome }}</h5></a>
+                    <p class="card-text text-muted small">{{ item.produto.categoria }}</p>
+                    <span class="product-price">R$ {{ item.produto.preco|floatformat:2 }}</span>
+                    {% if user.is_authenticated %}
+                        <p class="card-text text-muted small">ESTOQUE: {{ item.produto.estoque }} unidades</p>
+                        <div class="quantidade-item-container">
+                            <label style="margin: 0px 0px;" class="form-label">Quantidade: {{ item.quantidade }}</label>
+                        </div>
+                        <div class="quantidade-item-container2">
+                            <button type="button" class="btn btn-add-to-cart" style="color: red;"
+                                data-bs-toggle="modal" data-bs-target="#modalConfirmarExclusao{{ item.id }}">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                            <button type="button" class="btn btn-add-to-cart"
+                                data-bs-toggle="modal" data-bs-target="#modalEditarQuantidade{{ item.id }}">
+                                <i class="fa-solid fa-rotate-right"></i>Qntd
+                            </button>
+                        </div>
+                    {% else %}
+                        <p class="card-text text-muted small">ESTOQUE: {{ item.produto.estoque }} unidades</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalConfirmarExclusao{{ item.id }}" tabindex="-1" aria-labelledby="modalConfirmarExclusaoLabel{{ item.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-confirm-delete">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalConfirmarExclusaoLabel{{ item.id }}">Remover Item do Carrinho</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja remover o produto <strong>"{{ item.produto.nome }}"</strong> do seu carrinho?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                         <form action="{% url 'remover_item_carrinho' item.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Sim, Remover</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade div-principal" id="modalEditarQuantidade{{ item.id }}" tabindex="-1" aria-labelledby="modalEditarQuantidadeLabel{{ item.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-edit-quantity">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarQuantidadeLabel{{ item.id }}">Editar Quantidade</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="formEditarQuantidade{{ item.id }}">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="quantidadeProduto{{ item.quantidade }}" class="form-label">
+                                    <i class="fas fa-box me-2"></i>Quantidade do Produto
+                                </label>
+                                <input type="number" class="form-control quantity-input js-quantidade-item" id="quantidadeProduto{{ item.quantidade }}" value="{{ item.quantidade }}" min="1"
+                                    data-item-id="{{ item.id }}">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary js-editar-item" data-url-editar="{% url 'editar_item_carrinho' 0 0 %}"
+                                data-item-id="{{ item.id }}">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="lead">Nenhum produto adicionado ao carrinho no momento.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <div class="cart-card">
+        <h3>Seu Carrinho</h3>
+
+        <ul class="cart-summary">
+            <li class="cart-total-item">
+                <span class="label">Total de Itens:</span>
+                <span class="value">{{ carrinho.get_total_itens|default:0 }}</span>
+            </li>
+            <li>
+                <span class="label">Subtotal:</span>
+                <span class="value">R$ {{ carrinho.get_valor|default:"0.00"|floatformat:2 }}</span>
+            </li>
+            <li>
+                <span class="label">Frete:</span>
+                <span class="value">R$ {{ carrinho.frete|default:"0.00"|floatformat:2 }}</span>
+            </li>
+            <li class="cart-total-item">
+                <span class="label">Valor Total:</span>
+                <span class="value">R$ {{ carrinho.get_valor|default:"0.00"|floatformat:2 }}</span>
+            </li>
+        </ul>
+
+        <hr>
+
+        <div class="cart-actions">
+            <button type="button" class="btn btn-checkout">
+                <i class="fas fa-shopping-cart"></i> Finalizar Compra
+            </button>
+            <button type="button" class="btn btn-clear" data-bs-toggle="modal" data-bs-target="#modalLimparCarrinho">
+                <i class="fas fa-trash-alt"></i> Limpar Carrinho
+            </button>
+        </div>
+
+        <div class="modal fade" id="modalLimparCarrinho" tabindex="-1" aria-labelledby="modalLimparCarrinho" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-confirm-delete">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Limpar Itens do Carrinho</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja remover todos os produtos do seu carrinho?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                         <form action="{% url 'limpar_carrinho' carrinho.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Confimar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

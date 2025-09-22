@@ -1,0 +1,173 @@
+{% extends "base.html" %} {% load static %}
+
+{% block title %}BUSCAR - {{ pesquisa }} - Make Up Lab{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/contas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aux_produto.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="hero-section">
+        <h1 class="display-4 fw-bold">Buscar Produto:</h1>
+        <p class="lead">Aqui estão todos os produtos com essa palavra chave no NOME ou DESCRIÇÃO!</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{message.tags}} alert-dismissible fade show mb-5" style="font-size: 1rem">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2 class="section-title mb-5">Resultados para sua pesquisa "{{ pesquisa }}"</h2>
+    <form method="GET" action="{% url 'inicio' %}">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="filter-bar p-3 d-flex flex-wrap justify-content-between align-items-center">
+
+                <div class="filter-group d-flex align-items-center mb-2 mb-md-0 me-md-4">
+                    <label class="form-label me-2 mb-0 fw-bold">Marca:</label>
+                    <select name="marca" class="form-select js-filtro-marca filter-select">
+                        <option value="">Todas</option>
+                        {% for marca in marcas %}
+                            {% if marca_poo == marca %}
+                                <option selected value="{{ marca.id }}">{{ marca }}</option>
+                            {% else %}
+                                <option value="{{ marca.id }}">{{ marca }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group d-flex align-items-center mb-2 mb-md-0 me-md-4">
+                    <label class="form-label me-2 mb-0 fw-bold">Categoria:</label>
+                    <select name="categoria" class="form-select js-filtro-categoria filter-select">
+                        <option value="">Todas</option>
+                        {% for categoria in categorias %}
+                            {% if categoria_poo == categoria %}
+                                <option selected value="{{ categoria.id }}">{{ categoria }}</option>
+                            {% else %}
+                                <option value="{{ categoria.id }}">{{ categoria }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <button type="reset" id="btn-limpar-filtro" class="btn btn-add-to-cart">
+                       <i class="fa-solid fa-trash-arrow-up"></i>Limpar</button>
+
+                    <button type="submit" id="btn-aplicar-filtro" class="btn btn-add-to-cart">
+                        <i class="fa-solid fa-filter"></i>Aplicar Filtros</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </form>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 product-grid">
+        {% for produto, status, favoritos, quantidade in produtos %}
+        <div class="col">
+            <div class="product-card card h-100">
+                <a href="{% url 'ver_produto' produto.id %}"><img src="{{ produto.imagem_capa.url }}" class="card-img-top" alt="{{ produto.nome }}"></a>
+                <div class="card-body">
+                    <a class="card-title-product2" href="{% url 'ver_produto' produto.id %}"><h5 class="card-title-product">{{ produto.nome }}</h5></a>
+                    <p class="card-text text-muted small">{{ produto.categoria }}</p>
+                    <span class="product-price">R$ {{ produto.preco|floatformat:2 }}</span>
+                    {% if user.is_authenticated %}
+                        <p class="card-text text-muted small">ESTOQUE: {{ produto.estoque }} unidades</p>
+                        <div class="quantidade-item-container">
+                            <label for="quantidadeProduto-{{ produto.id }}" style="margin: 0px 0px;" class="form-label">Quantidade:</label>
+                            <input type="number" class="quantity-input form-control js-quantidade-produto" style="width: 100%;" id="quantidadeProduto-{{ produto.id }}" value="{{ quantidade }}" min="1">
+                        </div>
+                        <div class="quantidade-item-container2">
+                            {% if status %}
+                                <button type="button" class="btn btn-add-to-cart js-adicionar-item" data-produto-id="{{ produto.id }}"
+                                        data-url-adicionar="{% url 'adicionar_item_carrinho' 0 0 %}">
+                                    <i class="fa-solid fa-cart-shopping"></i> Alterar
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-add-to-cart js-adicionar-item" data-produto-id="{{ produto.id }}"
+                                        data-url-adicionar="{% url 'adicionar_item_carrinho' 0 0 %}">
+                                    <i class="fas fa-shopping-bag"></i> Adicionar
+                                </button>
+                            {% endif %}
+
+                            {% if favoritos %}
+                                <button type="button" class="js-adicionar-favorito favoritado btn-favorito" data-produto-id="{{ produto.id }}"
+                                        data-url-adicionar="{% url 'adicionar_produto_favorito' produto.id %}">
+                                    <i class="fa-solid fa-heart"></i>
+                                </button>
+                            {% else %}
+                                <button type="button" class="js-adicionar-favorito nao-favoritado btn-favorito" data-produto-id="{{ produto.id }}"
+                                        data-url-adicionar="{% url 'adicionar_produto_favorito' produto.id %}">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            {% endif %}
+
+                        </div>
+                    {% else %}
+                        <p class="card-text text-muted small">ESTOQUE: {{ produto.estoque }} unidades</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="lead">Nenhum produto correspondente a sua pesquisa.</p>
+            <a href="{% url 'inicio' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left me-2"></i> Voltar à Loja
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="Navegação de páginas" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if produtos2.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Primeira">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ produtos2.previous_page_number }}" aria-label="Anterior">
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in produtos2.paginator.page_range %}
+                {% if produtos2.number == num %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% elif num > produtos2.number|add:'-3' and num < produtos2.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if produtos2.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ produtos2.next_page_number }}" aria-label="Próxima">
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ produtos2.paginator.num_pages }}" aria-label="Última">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

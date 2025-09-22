@@ -1,0 +1,77 @@
+/* static/css/styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa; /* Um cinza claro para o fundo */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #ffb6c1 !important; /* Rosa claro para o nome da loja */
+}
+
+.nav-link {
+    color: #ffffff !important; /* Cor branca para links da navbar */
+}
+
+.nav-link:hover {
+    color: #ffdddd !important; /* Rosa mais claro ao passar o mouse */
+}
+
+.bg-dark {
+    background-color: #343a40 !important; /* Garante que o fundo seja escuro */
+}
+
+.footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    margin-top: 50px; /* Espaçamento acima do rodapé */
+}
+
+.footer a {
+    color: #ffb6c1; /* Cor para ícones sociais no rodapé */
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #fff;
+}
+
+/* Estilo para a contagem do carrinho */
+.cart-count {
+    font-size: 0.75em; /* Tamanho menor para o badge */
+    vertical-align: super;
+}
+
+/* Estilos para o jumbotron/hero section */
+.p-5 {
+    background: linear-gradient(135deg, #fce4ec 0%, #f4c2c2 100%); /* Gradiente rosa suave */
+    color: #343a40;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.p-5 h1 {
+    color: #880e4f; /* Um tom de rosa mais escuro para o título */
+    font-weight: 700;
+}
+
+.p-5 .btn-primary {
+    background-color: #e91e63; /* Rosa vibrante para o botão primário */
+    border-color: #e91e63;
+}
+
+.p-5 .btn-primary:hover {
+    background-color: #c2185b; /* Rosa mais escuro ao passar o mouse */
+    border-color: #c2185b;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}

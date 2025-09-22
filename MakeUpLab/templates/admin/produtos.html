@@ -1,0 +1,224 @@
+{% extends "admin/base.html" %} {% load static %}
+
+{% block title %}PRODUTOS{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/contas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="card-title text-start mb-0">Gerenciar Produtos</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}} alert-dismissible fade show">
+                    {{message}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adicionarProdutoModal">
+            <i class="fas fa-plus-circle me-2"></i> Adicionar Novo Produto
+        </button>
+    </div>
+
+    <hr>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for produto in produtos %}
+        <div class="col">
+            <div class="product-card card h-100">
+                {% if produto.imagem_capa %}
+                    <img src="{{ produto.imagem_capa.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                {% else %}
+                    <p class="card-text text-muted small">Not Found</p>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title-product">{{ produto.nome }}</h5>
+                    <p class="card-text text-muted small">|{{ produto.categoria }}</p>
+                    <p class="card-text text-muted small">|{{ produto.marca }}</p>
+                    <p class="card-text product-price mt-auto">Valor: R$ {{ produto.preco|floatformat:2 }}</p>
+                    <p class="card-text product-price mt-auto">Custo: R$ {{ produto.custo|floatformat:2 }}</p>
+                    <p class="card-text text-muted small">|Estoque: {{ produto.estoque }}</p>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a class="btn btn-secondary btn-sm flex-grow-1 me-2" href="{% url 'ver_produto' produto.id %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
+                              <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+                            </svg>Abrir
+                        </a>
+                        <button type="button" class="btn btn-secondary btn-sm flex-grow-1 me-2" data-bs-toggle="modal" data-bs-target="#editarProdutoModal{{ produto.id }}">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm flex-grow-1" data-bs-toggle="modal" data-bs-target="#confirmarExclusaoModal{{ produto.id }}">
+                            <i class="fas fa-trash-alt"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Modal de Confirmação de Exclusão (para cada produto) #}
+        <div class="modal fade" id="confirmarExclusaoModal{{ produto.id }}" tabindex="-1" aria-labelledby="confirmarExclusaoModalLabel{{ produto.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmarExclusaoModalLabel{{ produto.id }}">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir o produto "{{ produto.nome }}"? Esta ação é irreversível.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{% url 'excluir_produto' produto.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editarProdutoModal{{ produto.id }}" tabindex="-1" aria-labelledby="editarProdutoModalLabel{{ produto.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarProdutoModalLabel{{ produto.id }}">Editar Produto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{% url 'editar_produto' produto.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="nomeProduto1" class="form-label">Nome do Produto</label>
+                                <input type="text" class="form-control" id="nomeProduto1" name="nome" value="{{produto.nome}}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoriaProduto1" class="form-label">Categoria</label>
+                                <select class="form-control" id="categoriaProduto1" name="categoria" required>
+                                    {% for categoria in categorias %}
+                                        {% if categoria.id == produto.categoria_id %}
+                                            <option value="{{categoria.id}}" selected>{{categoria}}</option>
+                                        {% else %}
+                                            <option value="{{categoria.id}}">{{categoria}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                             <div class="mb-3">
+                                <label for="marcaProduto1" class="form-label">Marca</label>
+                                <select class="form-control" id="marcaProduto1" name="marca" required>
+                                    {% for marca in marcas %}
+                                        {% if marca.id == produto.marca_id %}
+                                             <option value="{{marca.id}}" selected>{{marca}}</option>
+                                        {% else %}
+                                             <option value="{{marca.id}}">{{marca}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="precoProduto1" class="form-label">Valor (R$)</label>
+                                <input type="number" step="0.01" class="form-control" id="precoProduto1" name="preco">
+                            </div>
+                            <div class="mb-3">
+                                <label for="custoProduto1" class="form-label">Custo (R$)</label>
+                                <input type="number" step="0.01" class="form-control" id="custoProduto1" name="custo">
+                            </div>
+                            <div class="mb-3">
+                                <label for="imagemProduto1" class="form-label">Imagem</label>
+                                <input type="file" class="form-control" id="imagemProduto1" name="imagem">
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricaoProduto1" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="descricaoProduto1" name="descricao" rows="3">{{produto.descricao}}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estoqueProduto1" class="form-label">Estoque</label>
+                                <input type="number" step="1" class="form-control" id="estoqueProduto1" name="estoque" value="{{produto.estoque}}">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="lead">Nenhum produto cadastrado ainda. Clique em "Adicionar Novo Produto" para começar!</p>
+            <i class="fas fa-box-open fa-3x text-muted mt-3"></i>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="adicionarProdutoModal" tabindex="-1" aria-labelledby="adicionarProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adicionarProdutoModalLabel">Adicionar Novo Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'produtos' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nomeProduto" class="form-label">Nome do Produto</label>
+                        <input type="text" class="form-control" id="nomeProduto" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoriaProduto" class="form-label">Categoria</label>
+                        <select class="form-control" id="categoriaProduto" name="categoria" required>
+                            {% for categoria in categorias %}
+                                <option value="{{categoria.id}}">{{categoria}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                     <div class="mb-3">
+                        <label for="marcaProduto" class="form-label">Marca</label>
+                        <select class="form-control" id="marcaProduto" name="marca" required>
+                            {% for marca in marcas %}
+                                <option value="{{marca.id}}">{{marca}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="precoProduto" class="form-label">Valor (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="precoProduto" name="preco" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="custoProduto" class="form-label">Custo (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="custoProduto" name="custo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagemProduto" class="form-label">Imagem</label>
+                        <input type="file" class="form-control" id="imagemProduto" name="imagem" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricaoProduto" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricaoProduto" name="descricao" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estoqueProduto" class="form-label">Estoque</label>
+                        <input type="number" step="1" class="form-control" id="estoqueProduto" name="estoque">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

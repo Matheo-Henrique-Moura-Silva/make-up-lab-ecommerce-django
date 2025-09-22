@@ -1,0 +1,252 @@
+/* static/css/styles.css */
+
+body {
+    font-family: 'Fira Code', monospace;
+    background-color: #f8f9fa; /* Um cinza claro para o fundo */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #ffffff !important; /* Rosa claro para o nome da loja */
+}
+
+.nav-link {
+    color: #ffffff !important; /* Cor branca para links da navbar */
+}
+
+.nav-link:hover {
+    color: #ffdddd !important; /* Rosa mais claro ao passar o mouse */
+}
+
+.bg-dark {
+    background-color: #ab0278 !important; /* Garante que o fundo seja escuro */
+}
+
+.footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    margin-top: 50px; /* Espaçamento acima do rodapé */
+}
+
+.footer a {
+    color: #ffb6c1; /* Cor para ícones sociais no rodapé */
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #fff;
+}
+
+/* Estilo para a contagem do carrinho */
+.cart-count {
+    font-size: 0.75em; /* Tamanho menor para o badge */
+    vertical-align: super;
+}
+
+/* Estilos para o jumbotron/hero section */
+.p-5 {
+    background: linear-gradient(135deg, #fce4ec 0%, #f4c2c2 100%); /* Gradiente rosa suave */
+    color: #343a40;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.p-5 h1 {
+    color: #880e4f; /* Um tom de rosa mais escuro para o título */
+    font-weight: 700;
+}
+
+.p-5 .btn-primary {
+    background-color: #e91e63; /* Rosa vibrante para o botão primário */
+    border-color: #e91e63;
+}
+
+.p-5 .btn-primary:hover {
+    background-color: #c2185b; /* Rosa mais escuro ao passar o mouse */
+    border-color: #c2185b;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+@font-face {
+    font-family: 'Fira Code';
+    src: url('../fonts/FiraCode-Regular.woff2') format('woff2');
+    font-weight: 400; /* Peso normal */
+    font-style: normal;
+    font-display: swap; /* Melhora o carregamento da fonte */
+}
+
+.modal-content {
+    border: none; /* Remove borda padrão */
+    border-radius: 0.8rem; /* Arredondamento consistente com os cards */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra mais forte para destacar */
+    background-color: var(--text-light); /* Fundo branco limpo */
+    font-family: var(--font-body);
+    animation: fadeInModal 0.3s ease-out forwards; /* Animação de entrada */
+}
+
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    background-color: #CC02A4; /* Fundo azul do cabeçalho */
+    color: White; /* Texto branco */
+    border-bottom: 1px solid var(--border-light); /* Borda inferior sutil */
+    border-top-left-radius: 0.8rem; /* Mantém arredondamento no topo */
+    border-top-right-radius: 0.8rem;
+    padding: 1.2rem 1.5rem; /* Mais preenchimento */
+}
+
+.modal-header .modal-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--text-light);
+}
+
+.modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%); /* Transforma o X branco para contraste */
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    color: White;
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-light); /* Borda superior sutil */
+    padding: 1rem 1.5rem;
+    background-color: var(--secondary-admin-grey); /* Fundo cinza suave no rodapé */
+    border-bottom-left-radius: 0.8rem; /* Mantém arredondamento na base */
+    border-bottom-right-radius: 0.8rem;
+}
+
+/* Botões dentro do modal footer */
+.modal-footer .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    border-radius: 0.5rem; /* Consistente com os botões administrativos */
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.modal-footer .btn-primary {
+    background-color: #ab0278;
+    border-color: #ab0278;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #CC02A4;
+    border-color: #CC02A4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-footer .btn-secondary {
+    background-color: #ab0278;
+    border-color: #ab0278;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #CC02A4;
+    border-color: #CC02A4;
+    transform: translateY(-1px);
+}
+/* static/css/styles.css */
+
+/* ... (código existente para estilo administrativo e modais) ... */
+
+/* --- Estilos para a Página de Produtos --- */
+
+/* Título da Página de Produtos */
+h1.card-title.text-start.mb-0 {
+    font-family: var(--font-heading);
+    color: var(--primary-admin-blue);
+    font-weight: 700;
+    font-size: 2.2rem; /* Tamanho ajustado para títulos de seção */
+}
+
+/* Cartão do Produto */
+.product-card {
+    border: 1px solid var(--border-light);
+    border-radius: 0.8rem; /* Consistente com outros cards */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra mais suave para cards de produto */
+    transition: all 0.3s ease;
+    overflow: hidden; /* Garante que a imagem respeite o border-radius */
+    background-color: var(--text-light); /* Fundo branco limpo */
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Efeito de elevação sutil no hover */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada no hover */
+}
+
+.product-card .card-img-top {
+    height: 180px; /* Altura fixa para as imagens */
+    object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+    border-top-left-radius: 0.8rem;
+    border-top-right-radius: 0.8rem;
+}
+
+.product-card .card-body {
+    padding: 1.2rem;
+    display: flex; /* Para flexbox e "sticky footer" de preço */
+    flex-direction: column;
+}
+
+.product-card .card-title-product {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.product-card .card-text.text-muted.small {
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+    color: var(--medium-grey) !important;
+}
+
+.product-card .product-price {
+    font-family: var(--font-heading); /* Fonte de título para o preço */
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--accent-purple); /* Cor de destaque para o preço */
+    margin-top: auto; /* Empurra o preço para baixo no flexbox */
+}
+
+.product-card .btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+}
+
+/* Estilo para o botão "Adicionar Novo Produto" */
+.btn.btn-primary i.fas {
+    vertical-align: middle;
+}

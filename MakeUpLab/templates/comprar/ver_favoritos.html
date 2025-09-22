@@ -1,0 +1,76 @@
+{% extends "base.html" %} {% load static %}
+
+{% block title %}Make Up Lab - FAVORITOS{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/contas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aux_produto.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    {# Seção Hero para a Página de Favoritos #}
+    <div class="hero-section">
+        <h1 class="display-4 fw-bold">Seus Produtos Favoritos</h1>
+        <p class="lead">Aqui estão todos os produtos que você amou. Adicione-os ao carrinho ou explore mais!</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{message.tags}} alert-dismissible fade show mb-5" style="font-size: 1rem">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {# Seção de Cards de Produtos Favoritos #}
+    <h2 class="section-title mb-5">Meus Produtos</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 product-grid">
+        {% for produto in favoritos %}
+        <div class="col">
+            <div class="product-card card h-100">
+                <a href="{% url 'ver_produto' produto.id %}">
+                    <img src="{{ produto.imagem_capa.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                </a>
+                {# Botão de Remover dos Favoritos #}
+                 <button type="button" class="js-adicionar-favorito favoritado btn-favorito botao" data-produto-id="{{ produto.id }}"
+                        data-url-adicionar="{% url 'adicionar_produto_favorito' produto.id %}">
+                    <i class="fa-solid fa-circle-minus"></i>
+                </button>
+                <div class="card-body">
+                    <h5 class="card-title-product">{{ produto.nome }}</h5>
+                    <p class="card-text text-muted small">{{ produto.categoria }}</p>
+                    <span class="product-price">R$ {{ produto.preco|floatformat:2 }}</span>
+
+                    <div class="card-body">
+                        {# Botão de Adicionar ao Carrinho #}
+                        <a href="{% url 'ver_produto' produto.id %}" style="color: var(--primary-pink);">
+                            <button type="button" class="btn btn-add-to-cart">
+                                <i class="fa-solid fa-eye"></i>Detalhes
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="lead">Você ainda não adicionou nenhum produto aos favoritos. Explore nossos produtos!</p>
+            <a href="{% url 'inicio' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left me-2"></i> Voltar à Loja
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="hero-section" style="margin-top: 48px;">
+        <h1 class="display-4 fw-bold">Produtos Adicionados aos Favoritos.</h1>
+        <a href="{% url 'inicio' %}" class="btn btn-primary btn-lg mt-3">
+            Explorar Produtos <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
