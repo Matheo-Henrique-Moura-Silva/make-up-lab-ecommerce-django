@@ -95,7 +95,18 @@ O servidor estará rodando em `http://127.0.0.1:8000/`.
 
 ### Telas do Sistema
 
-![Tela de LOGIN do sistema](screenshots/a(7).png)
+![Tela de INICIAL do sistema](screenshots/1.png)
+![Tela de INICIAL 2 do sistema](screenshots/2.png)
+![Tela de INICIAL 3 do sistema](screenshots/3.png)
+![Tela de LOGIN do sistema](screenshots/5.png)
+![Tela de CRIAR CONTA do sistema](screenshots/6.png)
+![Tela de VER PRODUTO do sistema](screenshots/7.png)
+![Tela de VER PRODUTO 2 do sistema](screenshots/11.png)
+![Tela de FAVORITOS do sistema](screenshots/8.png)
+![Tela de CARRINHO do sistema](screenshots/9.png)
+![Tela de CARRINHO 2 do sistema](screenshots/10.png)
+![Tela de CADASTRAR PRODUTO do sistema](screenshots/4.png)
+![Tela de BUSCAR PRODUTO do sistema](screenshots/12.png)
 
 -----
 
